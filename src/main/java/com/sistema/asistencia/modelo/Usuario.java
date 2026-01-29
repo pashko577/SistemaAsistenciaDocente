@@ -9,34 +9,71 @@ package com.sistema.asistencia.modelo;
  * @author User
  */
 public class Usuario {
-      private int id;
-    private String username;
+    
+    private int idUsuario;
+    private String usuario;
     private String password;
-    private int rolId;
-    private int docenteId;
+    private Rol rol;
+    private Docente docente;
+    private boolean estado;
 
     public Usuario() {}
 
-    public Usuario(int id, String username, String password, int rolId, int docenteId) {
-        this.id = id;
-        this.username = username;
+    public Usuario(int idUsuario, String usuario, String password,
+                   Rol rol, Docente docente, boolean estado) {
+        this.idUsuario = idUsuario;
+        this.usuario = usuario;
         this.password = password;
-        this.rolId = rolId;
-        this.docenteId = docenteId;
+        this.rol = rol;
+        this.docente = docente;
+        this.estado = estado;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getIdUsuario() {
+        return idUsuario;
+    }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getUsuario() {
+        return usuario;
+    }
 
-    public int getRolId() { return rolId; }
-    public void setRolId(int rolId) { this.rolId = rolId; }
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
 
-    public int getDocenteId() { return docenteId; }
-    public void setDocenteId(int docenteId) { this.docenteId = docenteId; }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public Docente getDocente() {
+        return docente;
+    }
+
+    public void setDocente(Docente docente) {
+        this.docente = docente;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
 }

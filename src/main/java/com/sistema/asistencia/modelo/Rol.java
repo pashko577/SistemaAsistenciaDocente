@@ -9,20 +9,30 @@ package com.sistema.asistencia.modelo;
  * @author User
  */
 public class Rol {
-    
-    private int id;
+    private int idRol;
     private String nombre;
 
     public Rol() {}
 
-    public Rol(int id, String nombre) {
-        this.id = id;
+    public Rol(int idRol, String nombre) {
+        this.idRol = idRol;
         this.nombre = nombre;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getIdRol() {
+        return idRol;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setIdRol(int idRol) {
+        this.idRol = idRol;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
 }

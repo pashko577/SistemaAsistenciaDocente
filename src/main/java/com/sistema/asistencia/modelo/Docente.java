@@ -9,50 +9,91 @@ package com.sistema.asistencia.modelo;
  * @author User
  */
 public class Docente {
-    private int id;
+   
+    private int idDocente;
     private String dni;
     private String nombres;
     private String apellidos;
     private String telefono;
-    private String email;
+    private String correo;
     private double pagoHora;
-    private boolean activo;
+    private boolean estado;
 
     public Docente() {}
 
-    public Docente(int id, String dni, String nombres, String apellidos,
-                   String telefono, String email, double pagoHora, boolean activo) {
-        this.id = id;
+    public Docente(int idDocente, String dni, String nombres, String apellidos,
+                   String telefono, String correo, double pagoHora, boolean estado) {
+        this.idDocente = idDocente;
         this.dni = dni;
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.telefono = telefono;
-        this.email = email;
+        this.correo = correo;
         this.pagoHora = pagoHora;
-        this.activo = activo;
+        this.estado = estado;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getIdDocente() {
+        return idDocente;
+    }
 
-    public String getDni() { return dni; }
-    public void setDni(String dni) { this.dni = dni; }
+    public void setIdDocente(int idDocente) {
+        this.idDocente = idDocente;
+    }
 
-    public String getNombres() { return nombres; }
-    public void setNombres(String nombres) { this.nombres = nombres; }
+    public String getDni() {
+        return dni;
+    }
 
-    public String getApellidos() { return apellidos; }
-    public void setApellidos(String apellidos) { this.apellidos = apellidos; }
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
 
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getNombres() {
+        return nombres;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
+    }
 
-    public double getPagoHora() { return pagoHora; }
-    public void setPagoHora(double pagoHora) { this.pagoHora = pagoHora; }
+    public String getApellidos() {
+        return apellidos;
+    }
 
-    public boolean isActivo() { return activo; }
-    public void setActivo(boolean activo) { this.activo = activo; }
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public double getPagoHora() {
+        return pagoHora;
+    }
+
+    public void setPagoHora(double pagoHora) {
+        this.pagoHora = pagoHora;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
 }

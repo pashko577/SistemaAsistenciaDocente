@@ -1,0 +1,183 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.sistema.asistencia.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.sistema.asistencia.config.Conexion;
+import com.sistema.asistencia.dao.UsuarioDAO;
+import com.sistema.asistencia.modelo.Docente;
+import com.sistema.asistencia.modelo.Rol;
+import com.sistema.asistencia.modelo.Usuario;
+
+/**
+ *
+ * @author User
+ */
+public class UsuarioDAOImpl implements UsuarioDAO {
+
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+
+    @Override
+    public boolean registrar(Usuario u) {
+
+        String sql = "INSERT INTO usuarios(usuario,password,id_rol,estado) VALUES (?,?,?,?)";
+
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, u.getUsuario());
+            ps.setString(2, u.getPassword());
+            ps.setInt(3, u.getRol().getIdRol());
+            ps.setBoolean(4, u.isEstado());
+
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println("Error Registrar Usuario: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public List<Usuario> listar() {
+
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios";
+
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Usuario u = new Usuario();
+                u.setIdUsuario(rs.getInt("id_usuario"));
+                u.setUsuario(rs.getString("usuario"));
+                u.setPassword(rs.getString("password"));
+
+                Rol r = new Rol();
+                r.setIdRol(rs.getInt("id_rol"));
+                u.setRol(r);
+
+                u.setEstado(rs.getBoolean("estado"));
+                lista.add(u);
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error Listar Usuario: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    @Override
+    public boolean actualizar(Usuario u) {
+
+        String sql = "UPDATE usuarios SET usuario=?,password=?,id_rol=?,estado=? WHERE id_usuario=?";
+
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, u.getUsuario());
+            ps.setString(2, u.getPassword());
+            ps.setInt(3, u.getRol().getIdRol());
+            ps.setBoolean(4, u.isEstado());
+            ps.setInt(5, u.getIdUsuario());
+
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println("Error Actualizar Usuario: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean eliminar(int id) {
+
+        String sql = "UPDATE usuarios SET estado=false WHERE id_usuario=?";
+
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println("Error Eliminar Usuario: " + e.getMessage());
+            return false;
+        }
+    }
+
+   @Override
+public Usuario login(String usuario, String password) {
+
+    Usuario u = null;
+
+ String sql = "SELECT u.*, r.id_rol, r.nombre AS rol_nombre, "
+           + "d.id_docente, d.nombres, d.apellidos "
+           + "FROM usuarios u "
+           + "INNER JOIN roles r ON u.id_rol = r.id_rol "
+           + "LEFT JOIN docentes d ON u.id_usuario = d.id_docente "
+           + "WHERE u.usuario=? AND u.password=? AND u.estado=true";
+
+
+    try {
+        con = Conexion.getConexion();
+        ps = con.prepareStatement(sql);
+
+        ps.setString(1, usuario);
+        ps.setString(2, password);
+
+        rs = ps.executeQuery();
+
+        if (rs.next()) {
+
+            // Usuario
+            u = new Usuario();
+            u.setIdUsuario(rs.getInt("id_usuario"));
+            u.setUsuario(rs.getString("usuario"));
+            u.setPassword(rs.getString("password"));
+            u.setEstado(rs.getBoolean("estado"));
+
+            // Rol
+            Rol r = new Rol();
+            r.setIdRol(rs.getInt("id_rol"));
+            r.setNombre(rs.getString("rol_nombre"));
+            u.setRol(r);
+
+            // Docente (opcional)
+            if (rs.getInt("id_docente") != 0) {
+                Docente d = new Docente();
+                d.setIdDocente(rs.getInt("id_docente"));
+                d.setNombres(rs.getString("nombres"));
+                d.setApellidos(rs.getString("apellidos"));
+                u.setDocente(d);
+            }
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Error Login: " + e.getMessage());
+    }
+
+    return u;
+}
+
+}
