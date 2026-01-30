@@ -34,7 +34,7 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="PanelMenu" max="32767" attributes="0"/>
-          <Component id="PanelContenido" alignment="1" max="32767" attributes="0"/>
+          <Component id="PanelContenido" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -90,6 +90,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Docentes"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDocentesActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnPagos">
           <Properties>

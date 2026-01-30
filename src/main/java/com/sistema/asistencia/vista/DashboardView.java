@@ -13,40 +13,41 @@ import javax.swing.JPanel;
  */
 public class DashboardView extends javax.swing.JFrame {
     
+    private Usuario usuario;
     
-private Usuario usuario;
-
-  public DashboardView(Usuario u) {
-    initComponents();
-    this.usuario = u;
-    validarRol();
-}
-  public DashboardView() {
-    initComponents();
-}
-  
-private void validarRol() {
-
-    String rol = usuario.getRol().getNombre();
-
-    if (rol.equals("DOCENTE")) {
-        btnUsuarios.setVisible(false);
-        btnPagos.setVisible(false);
+    public DashboardView(Usuario u) {
+        initComponents();
+        this.usuario = u;
+        validarRol();
     }
 
-    if (rol.equals("CONTROL")) {
-        btnUsuarios.setVisible(false);
+    public DashboardView() {
+        initComponents();
     }
-}
+    
+    private void validarRol() {
+        
+        String rol = usuario.getRol().getNombre();
+        
+        if (rol.equals("DOCENTE")) {
+            btnUsuarios.setVisible(false);
+            btnPagos.setVisible(false);
+        }
+        
+        if (rol.equals("CONTROL")) {
+            btnUsuarios.setVisible(false);
+        }
+    }
+    
+    private void mostrarPanel(JPanel p) {
+        p.setSize(PanelContenido.getWidth(), PanelContenido.getHeight());
+        p.setLocation(0, 0);
+        PanelContenido.removeAll();
+        PanelContenido.add(p);
+        PanelContenido.revalidate();
+        PanelContenido.repaint();
+    }
 
-private void mostrarPanel(JPanel p) {
-    p.setSize(PanelContenido.getWidth(), PanelContenido.getHeight());
-    p.setLocation(0,0);
-    PanelContenido.removeAll();
-    PanelContenido.add(p);
-    PanelContenido.revalidate();
-    PanelContenido.repaint();
-}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -77,6 +78,11 @@ private void mostrarPanel(JPanel p) {
         });
 
         btnDocentes.setText("Docentes");
+        btnDocentes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDocentesActionPerformed(evt);
+            }
+        });
 
         btnPagos.setText("Pagos");
         btnPagos.addActionListener(new java.awt.event.ActionListener() {
@@ -149,7 +155,7 @@ private void mostrarPanel(JPanel p) {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(PanelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(PanelContenido, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(PanelContenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -164,13 +170,17 @@ private void mostrarPanel(JPanel p) {
     }//GEN-LAST:event_btnAsistenciasActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-           System.exit(0);
+        System.exit(0);
 
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuariosActionPerformed
-            mostrarPanel(new UsuarioView());
+        mostrarPanel(new UsuarioView());
     }//GEN-LAST:event_btnUsuariosActionPerformed
+
+    private void btnDocentesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocentesActionPerformed
+        mostrarPanel(new DocenteView());
+    }//GEN-LAST:event_btnDocentesActionPerformed
 
     /**
      * @param args the command line arguments
