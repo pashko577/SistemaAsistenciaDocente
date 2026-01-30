@@ -3,4 +3,3 @@ com\sistema\asistencia\config\Conexion.class
 com\sistema\asistencia\modelo\Usuario.class
 com\sistema\asistencia\modelo\Asistencia.class
 com\sistema\asistencia\modelo\Rol.class
-com\sistema\asistencia\util\TestConexion.class

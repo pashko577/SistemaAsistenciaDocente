@@ -16,6 +16,7 @@ import com.sistema.asistencia.dao.UsuarioDAO;
 import com.sistema.asistencia.modelo.Docente;
 import com.sistema.asistencia.modelo.Rol;
 import com.sistema.asistencia.modelo.Usuario;
+import com.sistema.asistencia.util.test.PasswordUtil;
 
 /**
  *
@@ -37,7 +38,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             ps = con.prepareStatement(sql);
 
             ps.setString(1, u.getUsuario());
-            ps.setString(2, u.getPassword());
+            ps.setString(2, PasswordUtil.encriptar(u.getPassword()));
             ps.setInt(3, u.getRol().getIdRol());
             ps.setBoolean(4, u.isEstado());
 
@@ -126,58 +127,58 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
     }
 
-   @Override
-public Usuario login(String usuario, String password) {
+    @Override
+    public Usuario login(String usuario, String password) {
 
-    Usuario u = null;
+        Usuario u = null;
 
- String sql = "SELECT u.*, r.id_rol, r.nombre AS rol_nombre, "
-           + "d.id_docente, d.nombres, d.apellidos "
-           + "FROM usuarios u "
-           + "INNER JOIN roles r ON u.id_rol = r.id_rol "
-           + "LEFT JOIN docentes d ON u.id_usuario = d.id_docente "
-           + "WHERE u.usuario=? AND u.password=? AND u.estado=true";
+        String sql
+                = "SELECT u.*, r.id_rol, r.nombre AS rol_nombre, "
+                + "d.id_docente, d.nombres, d.apellidos "
+                + "FROM usuarios u "
+                + "INNER JOIN roles r ON u.id_rol = r.id_rol "
+                + "LEFT JOIN docentes d ON u.id_usuario = d.id_docente "
+                + "WHERE u.usuario=? AND u.estado=true";
 
+        try {
 
-    try {
-        con = Conexion.getConexion();
-        ps = con.prepareStatement(sql);
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, usuario);
+            rs = ps.executeQuery();
 
-        ps.setString(1, usuario);
-        ps.setString(2, password);
+            if (rs.next()) {
 
-        rs = ps.executeQuery();
+                String hashBD = rs.getString("password");
 
-        if (rs.next()) {
+                if (PasswordUtil.verificar(password, hashBD)) {
 
-            // Usuario
-            u = new Usuario();
-            u.setIdUsuario(rs.getInt("id_usuario"));
-            u.setUsuario(rs.getString("usuario"));
-            u.setPassword(rs.getString("password"));
-            u.setEstado(rs.getBoolean("estado"));
+                    u = new Usuario();
+                    u.setIdUsuario(rs.getInt("id_usuario"));
+                    u.setUsuario(rs.getString("usuario"));
+                    u.setPassword(hashBD);
+                    u.setEstado(rs.getBoolean("estado"));
 
-            // Rol
-            Rol r = new Rol();
-            r.setIdRol(rs.getInt("id_rol"));
-            r.setNombre(rs.getString("rol_nombre"));
-            u.setRol(r);
+                    Rol r = new Rol();
+                    r.setIdRol(rs.getInt("id_rol"));
+                    r.setNombre(rs.getString("rol_nombre"));
+                    u.setRol(r);
 
-            // Docente (opcional)
-            if (rs.getInt("id_docente") != 0) {
-                Docente d = new Docente();
-                d.setIdDocente(rs.getInt("id_docente"));
-                d.setNombres(rs.getString("nombres"));
-                d.setApellidos(rs.getString("apellidos"));
-                u.setDocente(d);
+                    if (rs.getInt("id_docente") != 0) {
+                        Docente d = new Docente();
+                        d.setIdDocente(rs.getInt("id_docente"));
+                        d.setNombres(rs.getString("nombres"));
+                        d.setApellidos(rs.getString("apellidos"));
+                        u.setDocente(d);
+                    }
+                }
             }
+
+        } catch (Exception e) {
+            System.out.println("Error Login: " + e.getMessage());
         }
 
-    } catch (SQLException e) {
-        System.out.println("Error Login: " + e.getMessage());
+        return u;
     }
-
-    return u;
-}
 
 }

@@ -11,16 +11,11 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author User
  */
 public class PasswordUtil {
-       // Hashear la contraseña
-    public static String hashPassword(String plainPassword) {
-        return BCrypt.hashpw(plainPassword, BCrypt.gensalt(12)); // 12 = fuerza del hash
+     public static String encriptar(String passwordPlano) {
+        return BCrypt.hashpw(passwordPlano, BCrypt.gensalt());
     }
 
-    // Verificar contraseña
-    public static boolean checkPassword(String plainPassword, String hashedPassword) {
-        if (hashedPassword == null || !hashedPassword.startsWith("$2a$")) {
-            throw new IllegalArgumentException("Formato de hash inválido");
-        }
-        return BCrypt.checkpw(plainPassword, hashedPassword);
+    public static boolean verificar(String passwordPlano, String hash) {
+        return BCrypt.checkpw(passwordPlano, hash);
     }
 }

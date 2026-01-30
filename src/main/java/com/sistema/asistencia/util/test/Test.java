@@ -22,19 +22,19 @@ public class Test {
      */
     public static void main(String[] args) {
 
-//        Docente docente = new Docente(1, "76319763", "Tonny", "Hinostroza", "957302463", "tonnyghp577@gmail.com", 20, true);
-//
-//     DocenteDAO dao = new DocenteDAOImpl();
-//
-//        if (dao.registrar(docente)) {
-//            System.out.println("✅ DOCENTE REGISTRADO CORRECTAMENTE");
-//        } else {
-//            System.out.println("❌ ERROR AL REGISTRAR DOCENTE");
-//        }
+        Docente docente = new Docente(1, "76319768", "Danny", "Hinostroza", "957302463", "Dannyghp577@gmail.com", 27, true);
 
-Rol r = new Rol(0,"Prueba");
-RolDAO dao = new RolDAOImpl();
-dao.registrar(r);
+     DocenteDAO dao = new DocenteDAOImpl();
+
+        if (dao.registrar(docente)) {
+            System.out.println("✅ DOCENTE REGISTRADO CORRECTAMENTE");
+        } else {
+            System.out.println("❌ ERROR AL REGISTRAR DOCENTE");
+        }
+
+//Rol r = new Rol(0,"Prueba");
+//RolDAO dao = new RolDAOImpl();
+//dao.registrar(r);
 
     }
 
