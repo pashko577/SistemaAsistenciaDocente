@@ -52,38 +52,46 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public List<Usuario> listar() {
+public List<Usuario> listar() {
 
-        List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios";
+    List<Usuario> lista = new ArrayList<>();
 
-        try {
-            con = Conexion.getConexion();
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
+    String sql =
+        "SELECT u.id_usuario, u.usuario, u.password, u.estado, " +
+        "r.id_rol, r.nombre " +
+        "FROM usuarios u " +
+        "INNER JOIN roles r ON u.id_rol = r.id_rol";
 
-            while (rs.next()) {
+    try {
 
-                Usuario u = new Usuario();
-                u.setIdUsuario(rs.getInt("id_usuario"));
-                u.setUsuario(rs.getString("usuario"));
-                u.setPassword(rs.getString("password"));
+        con = Conexion.getConexion();
+        ps = con.prepareStatement(sql);
+        rs = ps.executeQuery();
 
-                Rol r = new Rol();
-                r.setIdRol(rs.getInt("id_rol"));
-                u.setRol(r);
+        while (rs.next()) {
 
-                u.setEstado(rs.getBoolean("estado"));
-                lista.add(u);
+            Usuario u = new Usuario();
+            u.setIdUsuario(rs.getInt("id_usuario"));
+            u.setUsuario(rs.getString("usuario"));
+            u.setPassword(rs.getString("password"));
+            u.setEstado(rs.getBoolean("estado"));
 
-            }
+            Rol r = new Rol();
+            r.setIdRol(rs.getInt("id_rol"));
+            r.setNombre(rs.getString("nombre"));
 
-        } catch (SQLException e) {
-            System.out.println("Error Listar Usuario: " + e.getMessage());
+            u.setRol(r);
+
+            lista.add(u);
         }
 
-        return lista;
+    } catch (SQLException e) {
+        System.out.println("Error Listar Usuario: " + e.getMessage());
     }
+
+    return lista;
+}
+
 
     @Override
     public boolean actualizar(Usuario u) {
