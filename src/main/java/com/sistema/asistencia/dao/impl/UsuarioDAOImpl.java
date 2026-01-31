@@ -64,10 +64,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
         List<Usuario> lista = new ArrayList<>();
 
-        String sql = "SELECT u.id_usuario, u.usuario, u.password, u.estado, "
-                + "r.id_rol, r.nombre "
+        String sql = "SELECT u.id_usuario, u.usuario, u.estado, "
+                + "r.id_rol, r.nombre AS rol, "
+                + "d.id_docente, d.nombres, d.apellidos "
                 + "FROM usuarios u "
-                + "INNER JOIN roles r ON u.id_rol = r.id_rol";
+                + "INNER JOIN roles r ON u.id_rol = r.id_rol "
+                + "LEFT JOIN docentes d ON u.id_docente = d.id_docente";
 
         try {
 
@@ -80,14 +82,23 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 Usuario u = new Usuario();
                 u.setIdUsuario(rs.getInt("id_usuario"));
                 u.setUsuario(rs.getString("usuario"));
-                u.setPassword(rs.getString("password"));
                 u.setEstado(rs.getBoolean("estado"));
 
                 Rol r = new Rol();
                 r.setIdRol(rs.getInt("id_rol"));
-                r.setNombre(rs.getString("nombre"));
-
+                r.setNombre(rs.getString("rol"));
                 u.setRol(r);
+
+                // 👇 DOCENTE (si existe)
+                if (rs.getInt("id_docente") != 0) {
+                    Docente d = new Docente();
+                    d.setIdDocente(rs.getInt("id_docente"));
+                    d.setNombres(rs.getString("nombres"));
+                    d.setApellidos(rs.getString("apellidos"));
+                    u.setDocente(d);
+                } else {
+                    u.setDocente(null);
+                }
 
                 lista.add(u);
             }

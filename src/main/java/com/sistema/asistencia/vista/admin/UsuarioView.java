@@ -38,6 +38,7 @@ public class UsuarioView extends javax.swing.JPanel {
         modelo.addColumn("ID");
         modelo.addColumn("Usuario");
         modelo.addColumn("Rol");
+        modelo.addColumn("Docente");
         modelo.addColumn("Estado");
 
         tblUsuarios.setModel(modelo);
@@ -375,10 +376,19 @@ public class UsuarioView extends javax.swing.JPanel {
 
         for (Usuario u : dao.listar()) {
 
+            String docenteNombre = "—";
+
+            if (u.getDocente() != null) {
+                docenteNombre
+                        = u.getDocente().getNombres() + " "
+                        + u.getDocente().getApellidos();
+            }
+
             modelo.addRow(new Object[]{
                 u.getIdUsuario(),
                 u.getUsuario(),
                 u.getRol().getNombre(),
+                docenteNombre,
                 u.isEstado() ? "Activo" : "Inactivo"
             });
         }
@@ -402,16 +412,15 @@ public class UsuarioView extends javax.swing.JPanel {
 
     private void cargarDocentes() {
 
-    DocenteDAO dao = new DocenteDAOImpl();
-    List<Docente> lista = dao.listarDisponibles();
+        DocenteDAO dao = new DocenteDAOImpl();
+        List<Docente> lista = dao.listarDisponibles();
 
-    cbxDocente.removeAllItems();
+        cbxDocente.removeAllItems();
 
-    for (Docente d : lista) {
-        cbxDocente.addItem(d);
+        for (Docente d : lista) {
+            cbxDocente.addItem(d);
+        }
     }
-}
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
