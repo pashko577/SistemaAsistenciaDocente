@@ -23,4 +23,7 @@ public interface UsuarioDAO {
     boolean eliminar(int id);
 
     Usuario login(String usuario, String password);
+
+    String obtenerPassword(int idUsuario);
+
 }

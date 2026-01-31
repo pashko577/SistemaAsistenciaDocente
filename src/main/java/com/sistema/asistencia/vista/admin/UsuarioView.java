@@ -2,14 +2,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package com.sistema.asistencia.vista;
+package com.sistema.asistencia.vista.admin;
 
+import com.sistema.asistencia.dao.DocenteDAO;
 import com.sistema.asistencia.dao.RolDAO;
 import com.sistema.asistencia.dao.UsuarioDAO;
+import com.sistema.asistencia.dao.impl.DocenteDAOImpl;
 import com.sistema.asistencia.dao.impl.RolDAOImpl;
 import com.sistema.asistencia.dao.impl.UsuarioDAOImpl;
+import com.sistema.asistencia.modelo.Docente;
 import com.sistema.asistencia.modelo.Rol;
 import com.sistema.asistencia.modelo.Usuario;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.mindrot.jbcrypt.BCrypt;
@@ -23,6 +27,7 @@ public class UsuarioView extends javax.swing.JPanel {
     DefaultTableModel modelo = new DefaultTableModel();
     UsuarioDAO dao = new UsuarioDAOImpl();
     int idUsuario = 0;
+    private String passwordActual = "";
 
     /**
      * Creates new form UsuarioView
@@ -38,6 +43,7 @@ public class UsuarioView extends javax.swing.JPanel {
         tblUsuarios.setModel(modelo);
         listarUsuarios();
         cargarRoles();
+        cargarDocentes();
     }
 
     /**
@@ -61,6 +67,8 @@ public class UsuarioView extends javax.swing.JPanel {
         btnEliminar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblUsuarios = new javax.swing.JTable();
+        cbxDocente = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Usuario:");
@@ -72,6 +80,11 @@ public class UsuarioView extends javax.swing.JPanel {
         jLabel3.setText("Rol:");
 
         cbxRol.setModel(new javax.swing.DefaultComboBoxModel<>());
+        cbxRol.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxRolActionPerformed(evt);
+            }
+        });
 
         btnGuardar.setText("Guardar");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -119,12 +132,25 @@ public class UsuarioView extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tblUsuarios);
 
+        cbxDocente.setModel(new javax.swing.DefaultComboBoxModel<>());
+        cbxDocente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxDocenteActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel4.setText("User Docente:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 736, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(87, 87, 87)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,9 +159,7 @@ public class UsuarioView extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel3)
@@ -146,11 +170,15 @@ public class UsuarioView extends javax.swing.JPanel {
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(txtUsuario)
                                         .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
-                                    .addComponent(cbxRol, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 736, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(60, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(cbxRol, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel4)))))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbxDocente, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,7 +194,9 @@ public class UsuarioView extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(cbxRol, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxRol, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(cbxDocente, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -180,30 +210,45 @@ public class UsuarioView extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        
-    if (txtUsuario.getText().isEmpty()
-            || txtPassword.getPassword().length == 0) {
 
-        JOptionPane.showMessageDialog(this, "Complete datos");
-        return;
-    }
+        if (txtUsuario.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Complete usuario");
+            return;
+        }
 
-    Usuario u = new Usuario();
-    u.setUsuario(txtUsuario.getText());
+        Usuario u = new Usuario();
+        u.setUsuario(txtUsuario.getText());
 
-    // 🔐 ENCRIPTAR CONTRASEÑA
-    String clave = String.valueOf(txtPassword.getPassword());
-    String hash = BCrypt.hashpw(clave, BCrypt.gensalt());
-    u.setPassword(hash);
+        // 🔐 ENCRIPTACION
+        String clave = String.valueOf(txtPassword.getPassword());
+        String hash = BCrypt.hashpw(clave, BCrypt.gensalt());
+        u.setPassword(hash);
 
-    u.setRol((Rol) cbxRol.getSelectedItem());
-    u.setEstado(true);
+        Rol rol = (Rol) cbxRol.getSelectedItem();
+        u.setRol(rol);
+        u.setEstado(true);
 
-    if (dao.registrar(u)) {
-        JOptionPane.showMessageDialog(this, "Registrado");
-        listarUsuarios();
-        limpiar();
-    }
+        // ✅ SI ES DOCENTE, ASIGNAR DOCENTE
+        if (rol.getNombre().equals("DOCENTE")) {
+
+            if (cbxDocente.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Seleccione un docente");
+                return;
+            }
+
+            Docente d = (Docente) cbxDocente.getSelectedItem();
+            u.setDocente(d);
+
+        } else {
+            u.setDocente(null);
+        }
+
+        if (dao.registrar(u)) {
+            JOptionPane.showMessageDialog(this, "Registrado");
+            listarUsuarios();
+            limpiar();
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void tblUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsuariosMouseClicked
@@ -226,6 +271,7 @@ public class UsuarioView extends javax.swing.JPanel {
                 break;
             }
         }
+        passwordActual = dao.obtenerPassword(idUsuario);
     }//GEN-LAST:event_tblUsuariosMouseClicked
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
@@ -234,10 +280,8 @@ public class UsuarioView extends javax.swing.JPanel {
             return;
         }
 
-        if (txtUsuario.getText().isEmpty()
-                || txtPassword.getPassword().length == 0) {
-
-            JOptionPane.showMessageDialog(this, "Complete datos");
+        if (txtUsuario.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Complete usuario");
             return;
         }
 
@@ -245,13 +289,35 @@ public class UsuarioView extends javax.swing.JPanel {
         u.setIdUsuario(idUsuario);
         u.setUsuario(txtUsuario.getText());
 
-// 🔐 ENCRIPTACIÓN AQUÍ
+        // 🔐 ENCRIPTACIÓN
         String clave = String.valueOf(txtPassword.getPassword());
-        String hash = BCrypt.hashpw(clave, BCrypt.gensalt());
-        u.setPassword(hash);
 
-        u.setRol((Rol) cbxRol.getSelectedItem());
+        if (clave.isEmpty()) {
+            u.setPassword(passwordActual);
+        } else {
+            String hash = BCrypt.hashpw(clave, BCrypt.gensalt());
+            u.setPassword(hash);
+        }
+
+        Rol rol = (Rol) cbxRol.getSelectedItem();
+        u.setRol(rol);
         u.setEstado(true);
+
+        // ✅ DOCENTE
+        if (rol.getNombre().equals("DOCENTE")) {
+
+            if (cbxDocente.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Seleccione un docente");
+                return;
+            }
+
+            Docente d = (Docente) cbxDocente.getSelectedItem();
+            u.setDocente(d);
+
+        } else {
+            u.setDocente(null);
+        }
 
         if (dao.actualizar(u)) {
             JOptionPane.showMessageDialog(this, "Actualizado");
@@ -288,6 +354,21 @@ public class UsuarioView extends javax.swing.JPanel {
         limpiar();
     }//GEN-LAST:event_btnNuevoActionPerformed
 
+    private void cbxDocenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxDocenteActionPerformed
+
+    }//GEN-LAST:event_cbxDocenteActionPerformed
+
+    private void cbxRolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxRolActionPerformed
+        Rol r = (Rol) cbxRol.getSelectedItem();
+
+        if (r.getNombre().equals("DOCENTE")) {
+            cbxDocente.setEnabled(true);
+        } else {
+            cbxDocente.setEnabled(false);
+            cbxDocente.setSelectedIndex(-1);
+        }
+    }//GEN-LAST:event_cbxRolActionPerformed
+
     private void listarUsuarios() {
 
         modelo.setRowCount(0);
@@ -319,15 +400,31 @@ public class UsuarioView extends javax.swing.JPanel {
         idUsuario = 0;
     }
 
+    private void cargarDocentes() {
+
+    DocenteDAO dao = new DocenteDAOImpl();
+    List<Docente> lista = dao.listarDisponibles();
+
+    cbxDocente.removeAllItems();
+
+    for (Docente d : lista) {
+        cbxDocente.addItem(d);
+    }
+}
+
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
+    private javax.swing.JComboBox<Docente> cbxDocente;
     private javax.swing.JComboBox<Rol> cbxRol;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblUsuarios;
     private javax.swing.JPasswordField txtPassword;

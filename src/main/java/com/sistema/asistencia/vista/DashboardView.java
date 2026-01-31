@@ -4,6 +4,9 @@
  */
 package com.sistema.asistencia.vista;
 
+import com.sistema.asistencia.vista.admin.UsuarioView;
+import com.sistema.asistencia.vista.admin.DocenteView;
+import com.sistema.asistencia.vista.admin.AsistenciaView;
 import com.sistema.asistencia.modelo.Usuario;
 import javax.swing.JPanel;
 
@@ -19,6 +22,7 @@ public class DashboardView extends javax.swing.JFrame {
         initComponents();
         this.usuario = u;
         validarRol();
+        aplicarPermisos();
     }
 
     public DashboardView() {
@@ -63,6 +67,8 @@ public class DashboardView extends javax.swing.JFrame {
         btnPagos = new javax.swing.JButton();
         btnAsistencias = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
+        btnReportes = new javax.swing.JButton();
+        btnHorarios = new javax.swing.JButton();
         PanelContenido = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -105,6 +111,20 @@ public class DashboardView extends javax.swing.JFrame {
             }
         });
 
+        btnReportes.setText("Reportes");
+        btnReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportesActionPerformed(evt);
+            }
+        });
+
+        btnHorarios.setText("Horarios");
+        btnHorarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHorariosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout PanelMenuLayout = new javax.swing.GroupLayout(PanelMenu);
         PanelMenu.setLayout(PanelMenuLayout);
         PanelMenuLayout.setHorizontalGroup(
@@ -112,8 +132,10 @@ public class DashboardView extends javax.swing.JFrame {
             .addComponent(btnUsuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnDocentes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnPagos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnAsistencias, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+            .addComponent(btnAsistencias, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
             .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnHorarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnReportes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         PanelMenuLayout.setVerticalGroup(
             PanelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,7 +148,11 @@ public class DashboardView extends javax.swing.JFrame {
                 .addComponent(btnAsistencias, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnPagos, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 292, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnHorarios, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15))
         );
@@ -135,7 +161,7 @@ public class DashboardView extends javax.swing.JFrame {
         PanelContenido.setLayout(PanelContenidoLayout);
         PanelContenidoLayout.setHorizontalGroup(
             PanelContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 886, Short.MAX_VALUE)
+            .addGap(0, 880, Short.MAX_VALUE)
         );
         PanelContenidoLayout.setVerticalGroup(
             PanelContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,7 +192,7 @@ public class DashboardView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPagosActionPerformed
 
     private void btnAsistenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsistenciasActionPerformed
-        // TODO add your handling code here:
+        mostrarPanel(new AsistenciaView());
     }//GEN-LAST:event_btnAsistenciasActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
@@ -181,6 +207,52 @@ public class DashboardView extends javax.swing.JFrame {
     private void btnDocentesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocentesActionPerformed
         mostrarPanel(new DocenteView());
     }//GEN-LAST:event_btnDocentesActionPerformed
+
+    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnReportesActionPerformed
+
+    private void btnHorariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHorariosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnHorariosActionPerformed
+private void aplicarPermisos() {
+
+    String rol = usuario.getRol().getNombre();
+
+    // Ocultar todo primero
+    btnUsuarios.setVisible(false);
+    btnDocentes.setVisible(false);
+    btnAsistencias.setVisible(false);
+    btnPagos.setVisible(false);
+    btnReportes.setVisible(false);
+    btnHorarios.setVisible(false);
+
+    switch (rol) {
+
+        case "ADMIN":
+            btnUsuarios.setVisible(true);
+            btnDocentes.setVisible(true);
+            btnAsistencias.setVisible(true);
+            btnPagos.setVisible(true);
+            btnReportes.setVisible(true);
+            btnHorarios.setVisible(true);
+            break;
+
+        case "DIRECTOR":
+            btnDocentes.setVisible(true);
+            btnAsistencias.setVisible(true);
+            btnReportes.setVisible(true);
+            break;
+
+        case "CONTROL":
+            btnAsistencias.setVisible(true);
+            break;
+
+        case "DOCENTE":
+            btnAsistencias.setVisible(true);
+            break;
+    }
+}
 
     /**
      * @param args the command line arguments
@@ -222,7 +294,9 @@ public class DashboardView extends javax.swing.JFrame {
     private javax.swing.JPanel PanelMenu;
     private javax.swing.JButton btnAsistencias;
     private javax.swing.JButton btnDocentes;
+    private javax.swing.JButton btnHorarios;
     private javax.swing.JButton btnPagos;
+    private javax.swing.JButton btnReportes;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnUsuarios;
     // End of variables declaration//GEN-END:variables

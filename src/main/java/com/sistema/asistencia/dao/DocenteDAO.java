@@ -20,4 +20,6 @@ public interface DocenteDAO {
     boolean actualizar(Docente d);
 
     boolean eliminar(int id);
+
+    List<Docente> listarDisponibles();
 }

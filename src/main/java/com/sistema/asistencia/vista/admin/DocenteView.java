@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package com.sistema.asistencia.vista;
+package com.sistema.asistencia.vista.admin;
 
 import com.sistema.asistencia.dao.DocenteDAO;
 import com.sistema.asistencia.dao.impl.DocenteDAOImpl;

@@ -130,4 +130,35 @@ public class DocenteDAOImpl implements DocenteDAO {
             return false;
         }
     }
+    @Override
+    public List<Docente> listarDisponibles() {
+
+    List<Docente> lista = new ArrayList<>();
+
+    String sql =
+    "SELECT d.* FROM docentes d " +
+    "LEFT JOIN usuarios u ON d.id_docente = u.id_docente " +
+    "WHERE u.id_usuario IS NULL AND d.estado = true";
+
+    try {
+        con = Conexion.getConexion();
+        ps = con.prepareStatement(sql);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+
+            Docente d = new Docente();
+            d.setIdDocente(rs.getInt("id_docente"));
+            d.setNombres(rs.getString("nombres"));
+            d.setApellidos(rs.getString("apellidos"));
+            lista.add(d);
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Error listarDisponibles: " + e.getMessage());
+    }
+
+    return lista;
+}
+
 }

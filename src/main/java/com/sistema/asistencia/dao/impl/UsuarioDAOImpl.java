@@ -31,16 +31,24 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public boolean registrar(Usuario u) {
 
-        String sql = "INSERT INTO usuarios(usuario,password,id_rol,estado) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO usuarios(usuario,password,id_rol,id_docente,estado) VALUES (?,?,?,?,?)";
 
         try {
+
             con = Conexion.getConexion();
             ps = con.prepareStatement(sql);
 
             ps.setString(1, u.getUsuario());
             ps.setString(2, PasswordUtil.encriptar(u.getPassword()));
             ps.setInt(3, u.getRol().getIdRol());
-            ps.setBoolean(4, u.isEstado());
+
+            if (u.getDocente() != null) {
+                ps.setInt(4, u.getDocente().getIdDocente());
+            } else {
+                ps.setNull(4, java.sql.Types.INTEGER);
+            }
+
+            ps.setBoolean(5, u.isEstado());
 
             ps.executeUpdate();
             return true;
@@ -52,51 +60,49 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-public List<Usuario> listar() {
+    public List<Usuario> listar() {
 
-    List<Usuario> lista = new ArrayList<>();
+        List<Usuario> lista = new ArrayList<>();
 
-    String sql =
-        "SELECT u.id_usuario, u.usuario, u.password, u.estado, " +
-        "r.id_rol, r.nombre " +
-        "FROM usuarios u " +
-        "INNER JOIN roles r ON u.id_rol = r.id_rol";
+        String sql = "SELECT u.id_usuario, u.usuario, u.password, u.estado, "
+                + "r.id_rol, r.nombre "
+                + "FROM usuarios u "
+                + "INNER JOIN roles r ON u.id_rol = r.id_rol";
 
-    try {
+        try {
 
-        con = Conexion.getConexion();
-        ps = con.prepareStatement(sql);
-        rs = ps.executeQuery();
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
 
-        while (rs.next()) {
+            while (rs.next()) {
 
-            Usuario u = new Usuario();
-            u.setIdUsuario(rs.getInt("id_usuario"));
-            u.setUsuario(rs.getString("usuario"));
-            u.setPassword(rs.getString("password"));
-            u.setEstado(rs.getBoolean("estado"));
+                Usuario u = new Usuario();
+                u.setIdUsuario(rs.getInt("id_usuario"));
+                u.setUsuario(rs.getString("usuario"));
+                u.setPassword(rs.getString("password"));
+                u.setEstado(rs.getBoolean("estado"));
 
-            Rol r = new Rol();
-            r.setIdRol(rs.getInt("id_rol"));
-            r.setNombre(rs.getString("nombre"));
+                Rol r = new Rol();
+                r.setIdRol(rs.getInt("id_rol"));
+                r.setNombre(rs.getString("nombre"));
 
-            u.setRol(r);
+                u.setRol(r);
 
-            lista.add(u);
+                lista.add(u);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error Listar Usuario: " + e.getMessage());
         }
 
-    } catch (SQLException e) {
-        System.out.println("Error Listar Usuario: " + e.getMessage());
+        return lista;
     }
-
-    return lista;
-}
-
 
     @Override
     public boolean actualizar(Usuario u) {
 
-        String sql = "UPDATE usuarios SET usuario=?,password=?,id_rol=?,estado=? WHERE id_usuario=?";
+        String sql = "UPDATE usuarios SET usuario=?, password=?, id_rol=?, id_docente=?, estado=? WHERE id_usuario=?";
 
         try {
             con = Conexion.getConexion();
@@ -105,8 +111,16 @@ public List<Usuario> listar() {
             ps.setString(1, u.getUsuario());
             ps.setString(2, u.getPassword());
             ps.setInt(3, u.getRol().getIdRol());
-            ps.setBoolean(4, u.isEstado());
-            ps.setInt(5, u.getIdUsuario());
+
+            // 👉 DOCENTE
+            if (u.getDocente() != null) {
+                ps.setInt(4, u.getDocente().getIdDocente());
+            } else {
+                ps.setNull(4, java.sql.Types.INTEGER);
+            }
+
+            ps.setBoolean(5, u.isEstado());
+            ps.setInt(6, u.getIdUsuario());
 
             ps.executeUpdate();
             return true;
@@ -140,12 +154,11 @@ public List<Usuario> listar() {
 
         Usuario u = null;
 
-        String sql
-                = "SELECT u.*, r.id_rol, r.nombre AS rol_nombre, "
+        String sql = "SELECT u.*, r.id_rol, r.nombre AS rol_nombre, "
                 + "d.id_docente, d.nombres, d.apellidos "
                 + "FROM usuarios u "
                 + "INNER JOIN roles r ON u.id_rol = r.id_rol "
-                + "LEFT JOIN docentes d ON u.id_usuario = d.id_docente "
+                + "LEFT JOIN docentes d ON u.id_docente = d.id_docente "
                 + "WHERE u.usuario=? AND u.estado=true";
 
         try {
@@ -187,6 +200,30 @@ public List<Usuario> listar() {
         }
 
         return u;
+    }
+
+    @Override
+    public String obtenerPassword(int idUsuario) {
+
+        String pass = "";
+
+        String sql = "SELECT password FROM usuarios WHERE id_usuario=?";
+
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                pass = rs.getString("password");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error obtenerPassword: " + e.getMessage());
+        }
+
+        return pass;
     }
 
 }
